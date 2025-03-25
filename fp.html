@@ -2,91 +2,32 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Yönlendirme Kontrol</title>
+  <title>Etkinlik Detayları</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: sans-serif;
+      margin-top: 50px;
+    }
+    .clickable {
+      display: inline-block;
+      cursor: pointer;
+    }
+    .clickable img {
+      width: 250px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+  </style>
 </head>
 <body>
-  <h3 style="text-align:center;">Etkinlik kontrolü yapılıyor...</h3>
 
-  <script>
-    const result = {
-      canvas: false,
-      audio: false,
-      webgl: false,
-      fonts: 0,
-      plugins: 0
-    };
+  <h3>Etkinlik Detayları burada yer alacaktır.</h3>
+  <p>Lütfen detaylar için tıklayın:</p>
 
-    async function getIPCountry() {
-      try {
-        const res = await fetch("https://ipapi.co/json/");
-        const data = await res.json();
-        console.log("Ülke kodu:", data.country_code);
-        return data.country_code === "TR";
-      } catch (e) {
-        console.log("IP sorgusu xətası:", e);
-        return false;
-      }
-    }
+  <div class="clickable" onclick="window.top.location.href='https://zbahis310.com/Register-1274'">
+    <img src="https://i.imgur.com/V3yE0XW.png" alt="Katılmak için tıklayın">
+  </div>
 
-    function redirectSafely(url) {
-      let a = document.createElement("a");
-      a.href = url;
-      a.target = "_top";
-      document.body.appendChild(a);
-      a.click();
-    }
-
-    document.addEventListener("click", () => {
-      try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const audioCtx = new AudioContext();
-        result.audio = true;
-      } catch (e) {
-        result.audio = false;
-      }
-    });
-
-    async function checkAndRedirect() {
-      const isMobile =
-        /iPhone|Android|Mobile/i.test(navigator.userAgent) ||
-        (window.screen.width < 768 && /Chrome|Safari/i.test(navigator.userAgent));
-      
-      const isTR = await getIPCountry();
-
-      try {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        ctx.fillText("Test", 10, 10);
-        const data = canvas.toDataURL();
-        result.canvas = data.length > 100;
-      } catch (e) {}
-
-      try {
-        const canvas = document.createElement("canvas");
-        const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-        result.webgl = !!gl;
-      } catch (e) {}
-
-      result.fonts = document.fonts ? document.fonts.size || 100 : 100;
-      result.plugins = navigator.plugins.length;
-
-      console.log("Fingerprint:", result);
-      const isHuman =
-        result.canvas && result.webgl && result.fonts > 50; // audio əlavə ediləcək click ilə
-
-      console.log("Mobil:", isMobile);
-      console.log("TR:", isTR);
-      console.log("İnsan:", isHuman);
-
-      if (isMobile && isTR && isHuman) {
-        console.log("Yönlendirme başlatılır...");
-        redirectSafely("https://zbahis310.com/Register-1274");
-      } else {
-        document.body.innerHTML = "<h3>Etkinlik bilgileri burada görünəcək.</h3>";
-      }
-    }
-
-    setTimeout(checkAndRedirect, 2500);
-  </script>
 </body>
 </html>
